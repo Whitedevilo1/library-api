@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Book Library</title>
+  <style>
+    body { font-family: Arial; padding: 20px; background: #f4f4f4; }
+    h1 { color: #333; }
+    input, button { margin: 5px; padding: 8px; }
+    table { width: 100%; margin-top: 20px; border-collapse: collapse; }
+    th, td { border: 1px solid #ccc; padding: 10px; }
+    th { background-color: #eee; }
+  </style>
+</head>
+<body>
+
+  <h1>📚 Book Library</h1>
+
+  <h3>Add New Book</h3>
+  <input id="title" placeholder="Title">
+  <input id="author" placeholder="Author">
+  <input id="year" placeholder="Year">
+  <input id="genre" placeholder="Genre">
+  <button onclick="addBook()">Add</button>
+
+  <h3>Book List</h3>
+  <table id="books">
+    <thead>
+      <tr>
+        <th>ID</th><th>Title</th><th>Author</th><th>Year</th><th>Genre</th><th>Actions</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    const api = 'http://localhost:5000/books';
+
+    async function fetchBooks() {
+      const res = await fetch(api);
+      const books = await res.json();
+      const tbody = document.querySelector('#books tbody');
+      tbody.innerHTML = '';
+      books.forEach(book => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${book.id}</td>
+          <td><input value="${book.title}" onchange="updateField(${book.id}, 'title', this.value)"></td>
+          <td><input value="${book.author}" onchange="updateField(${book.id}, 'author', this.value)"></td>
+          <td><input value="${book.year_published}" onchange="updateField(${book.id}, 'year_published', this.value)"></td>
+          <td><input value="${book.genre}" onchange="updateField(${book.id}, 'genre', this.value)"></td>
+          <td><button onclick="deleteBook(${book.id})">Delete</button></td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    async function addBook() {
+      const data = {
+        title: document.getElementById('title').value,
+        author: document.getElementById('author').value,
+        year_published: parseInt(document.getElementById('year').value),
+        genre: document.getElementById('genre').value
+      };
+      await fetch(api, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      fetchBooks();
+    }
+
+    async function updateField(id, field, value) {
+      const res = await fetch(`${api}/${id}`);
+      const book = await res.json();
+      book[field] = value;
+      await fetch(`${api}/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(book)
+      });
+      fetchBooks();
+    }
+
+    async function deleteBook(id) {
+      await fetch(`${api}/${id}`, { method: 'DELETE' });
+      fetchBooks();
+    }
+
+    fetchBooks();
+  </script>
+</body>
+</html>

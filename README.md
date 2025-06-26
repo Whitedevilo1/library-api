@@ -34,4 +34,4 @@ All endpoints return data in JSON format. To test these APIs, users can either u
 When deployed on a platform like Render, you must replace "http://localhost:5000" with your deployed site URL e.g., any "site url you will host it on" , i used render specifically. not changing the url will result in incorrect result as the frontend will not interact with the API as you want due to difference in the addresses.
 
 ✅ Keploy API Testing Report:
-![Test Coverage Screenshot](screenshots/keploy-test-report.png)
+![Test Coverage Screenshot](keploy-test-report.png)

@@ -33,5 +33,17 @@ All endpoints return data in JSON format. To test these APIs, users can either u
 
 When deployed on a platform like Render, you must replace "http://localhost:5000" with your deployed site URL e.g., any "site url you will host it on" , i used render specifically. not changing the url will result in incorrect result as the frontend will not interact with the API as you want due to difference in the addresses.
 
+✅ AI-Generated API Tests
+Keploy used the OpenAPI schema and curl requests to generate test cases.  
+Tested API: `https://books-api-h6um.onrender.com`
+
 ✅ Keploy API Testing Report:
 ![Test Coverage Screenshot](keploy-test-report.png)
+
+🧪 API Testing with Keploy + CI/CD Integration:
+We used [Keploy](https://keploy.io) to automatically generate and run test scenarios for our Book Library API.
+
+🧪 CI/CD Workflow
+CI/CD testing was set up using **GitHub Actions**, and API testing runs on every push to `main`.
+
+Workflow Path: `.github/workflows/keploy.yml`

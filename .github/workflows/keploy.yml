@@ -2,32 +2,25 @@ name: Keploy API Test
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
-  test:
+  keploy-test:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.11'
-
-    - name: Install dependencies
-      run: |
-        python -m venv venv
-        source venv/bin/activate
-        pip install -r requirements.txt
-
-    - name: Run Keploy Test
+    - name: Install Keploy CLI
       run: |
         curl -LO https://github.com/keploy/keploy/releases/latest/download/keploy-linux-amd64
         chmod +x keploy-linux-amd64
         sudo mv keploy-linux-amd64 /usr/local/bin/keploy
-        keploy test -c "python app.py" --delay 5
+
+    - name: Run Keploy Test
+      run: |
+        keploy test --url https://books-api-h6um.onrender.com \
+                    --schema ./openapi.yaml \
+                    --curls ./curls.txt

@@ -1,0 +1,33 @@
+name: Keploy API Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        python -m venv venv
+        source venv/bin/activate
+        pip install -r requirements.txt
+
+    - name: Run Keploy Test
+      run: |
+        curl -LO https://github.com/keploy/keploy/releases/latest/download/keploy-linux-amd64
+        chmod +x keploy-linux-amd64
+        sudo mv keploy-linux-amd64 /usr/local/bin/keploy
+        keploy test -c "python app.py" --delay 5
